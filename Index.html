@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lady, mi universo</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+      background: radial-gradient(circle at center, #2d1458, #090018 70%);
+    }
+
+    .pantalla {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+    }
+
+    .brillo-fondo {
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 175, 204, .35), transparent 65%);
+      filter: blur(20px);
+      animation: respirar 6s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    .brillo-uno { top: -190px; left: -150px; }
+    .brillo-dos { right: -170px; bottom: -180px; background: radial-gradient(circle, rgba(189, 224, 254, .28), transparent 65%); }
+
+    @keyframes respirar {
+      from { transform: scale(.9); opacity: .55; }
+      to { transform: scale(1.15); opacity: .9; }
+    }
+
+    .fondo-estrellas span {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      animation: flotar 8s infinite alternate;
+      opacity: .75;
+      box-shadow: 0 0 10px white;
+      z-index: 1;
+    }
+
+    .estrella-fugaz {
+      position: absolute;
+      top: 15%;
+      left: -120px;
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffd6f6, transparent);
+      transform: rotate(-20deg);
+      animation: fugaz 7s linear infinite;
+      opacity: .8;
+      z-index: 1;
+    }
+
+    .estrella-fugaz.dos {
+      top: 70%;
+      animation-delay: 3s;
+      animation-duration: 9s;
+    }
+
+    @keyframes fugaz {
+      0% { transform: translateX(0) translateY(0) rotate(-20deg); opacity: 0; }
+      10% { opacity: 1; }
+      45% { opacity: .85; }
+      100% { transform: translateX(120vw) translateY(230px) rotate(-20deg); opacity: 0; }
+    }
+
+    @keyframes flotar {
+      from { transform: translateY(0); opacity: .35; }
+      to { transform: translateY(-45px); opacity: 1; }
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #ffd6f6;
+      text-shadow: 0 0 20px #ff8be8;
+      margin-bottom: 14px;
+      z-index: 2;
+    }
+
+    p {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: #f4d7ff;
+      z-index: 2;
+    }
+
+    button {
+      margin-top: 28px;
+      padding: 15px 38px;
+      border: none;
+      border-radius: 35px;
+      background: linear-gradient(135deg, #ffafcc, #cdb4db, #bde0fe);
+      color: #37154c;
+      font-weight: bold;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 0 25px #ffafcc;
+      transition: .3s;
+      z-index: 6;
+    }
+
+    button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 40px #ffc8dd;
+    }
+
+    .sistema {
+      position: relative;
+      width: min(420px, 80vw);
+      height: min(420px, 80vw);
+      margin-bottom: 18px;
+      z-index: 2;
+    }
+
+    .sol {
+      position: absolute;
+      width: 20%;
+      height: 20%;
+      border-radius: 50%;
+      top: 40%;
+      left: 40%;
+      background: radial-gradient(circle, #fff7ad, #ff9f1c);
+      box-shadow: 0 0 60px #ffd166;
+      animation: pulsoSol 2.8s infinite alternate;
+    }
+
+    @keyframes pulsoSol {
+      from { box-shadow: 0 0 35px #ffd166; }
+      to { box-shadow: 0 0 80px #ffd166; }
+    }
+
+    .orbita {
+      position: absolute;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 50%;
+      animation: girar linear infinite;
+    }
+
+    .planeta {
+      position: absolute;
+      border-radius: 50%;
+      top: -9px;
+      left: 50%;
+      box-shadow: 0 0 20px white;
+    }
+
+    .o1 { width: 36%; height: 36%; top: 32%; left: 32%; animation-duration: 5s; }
+    .o2 { width: 58%; height: 58%; top: 21%; left: 21%; animation-duration: 8s; }
+    .o3 { width: 82%; height: 82%; top: 9%; left: 9%; animation-duration: 12s; }
+
+    .p1 { width: 18px; height: 18px; background: #ffafcc; }
+    .p2 { width: 22px; height: 22px; background: #cdb4db; }
+    .p3 { width: 26px; height: 26px; background: #bde0fe; }
+
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    #universo {
+      display: none;
+      background: radial-gradient(circle at top, #42145f, #090018 75%);
+    }
+
+    .constelacion {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      animation: moverConstelacion 6s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes moverConstelacion {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-25px) scale(1.04); }
+    }
+
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    line {
+      stroke-width: 3;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 8px #ffb3ec);
+      animation: iluminar 2s infinite alternate;
+    }
+
+    @keyframes iluminar {
+      from { opacity: .35; }
+      to { opacity: 1; }
+    }
+
+    .estrella {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      box-shadow: 0 0 25px currentColor;
+      animation: brillar 1.5s infinite alternate;
+    }
+
+    @keyframes brillar {
+      from { transform: scale(.8); opacity: .5; }
+      to { transform: scale(1.5); opacity: 1; }
+    }
+
+    .contenido {
+      z-index: 5;
+      width: min(920px, 94vw);
+      max-height: 90vh;
+      padding: clamp(18px, 3vw, 30px);
+      border-radius: 28px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.13);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 38px rgba(255, 179, 236, .42);
+      animation: aparecer .9s ease both;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nombre {
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #ffafcc, #ffc8dd, #cdb4db, #bde0fe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: none;
+    }
+
+    .corazon {
+      font-size: clamp(3rem, 7vw, 4.4rem);
+      animation: latir 1.2s infinite;
+      margin-bottom: 8px;
+    }
+
+    @keyframes latir { 50% { transform: scale(1.22); } }
+
+    .subtitulo {
+      font-size: clamp(1.6rem, 4vw, 2.7rem);
+      margin-bottom: 8px;
+    }
+
+    .frase-corta {
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .carta {
+      display: none;
+      max-width: 850px;
+      max-height: 45vh;
+      overflow-y: auto;
+      margin: 20px auto 0;
+      padding: 24px;
+      text-align: left;
+      line-height: 1.85;
+      color: #fff5ff;
+      background: rgba(10, 0, 30, .32);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 22px;
+      box-shadow: inset 0 0 22px rgba(255,175,204,.12), 0 0 30px rgba(255,175,204,.25);
+    }
+
+    .carta.mostrar {
+      display: block;
+      animation: aparecer .8s ease both;
+    }
+
+    .carta p {
+      margin: 0;
+      font-size: clamp(.95rem, 2vw, 1.05rem);
+      color: #fff7ff;
+    }
+
+    .carta::-webkit-scrollbar { width: 8px; }
+    .carta::-webkit-scrollbar-track { background: rgba(255,255,255,.06); border-radius: 10px; }
+    .carta::-webkit-scrollbar-thumb { background: linear-gradient(#ffafcc, #bde0fe); border-radius: 10px; }
+
+    .firma {
+      display: block;
+      text-align: right;
+      margin-top: 18px;
+      color: #ffd6f6;
+      font-weight: 700;
+    }
+
+    .oculto { display: none; }
+
+    @media (max-width: 600px) {
+      .pantalla { padding: 16px; }
+      .sistema { width: 300px; height: 300px; }
+      .contenido { max-height: 92vh; }
+      .carta { max-height: 42vh; padding: 18px; line-height: 1.65; }
+      button { padding: 13px 28px; }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="pantalla" id="inicio">
+    <div class="brillo-fondo brillo-uno"></div>
+    <div class="brillo-fondo brillo-dos"></div>
+    <div class="fondo-estrellas"></div>
+    <div class="estrella-fugaz"></div>
+    <div class="estrella-fugaz dos"></div>
+
+    <div class="sistema">
+      <div class="sol"></div>
+      <div class="orbita o1"><div class="planeta p1"></div></div>
+      <div class="orbita o2"><div class="planeta p2"></div></div>
+      <div class="orbita o3"><div class="planeta p3"></div></div>
+    </div>
+
+    <h1>Felices 2 años 4 meses 💖</h1>
+    <p>Lady, gracias por iluminar mi vida de una forma tan bonita.</p>
+    <button onclick="mostrarUniverso()">Siguiente ✨</button>
+  </section>
+
+  <section class="pantalla" id="universo">
+    <div class="brillo-fondo brillo-uno"></div>
+    <div class="brillo-fondo brillo-dos"></div>
+    <div class="fondo-estrellas"></div>
+    <div class="estrella-fugaz"></div>
+    <div class="estrella-fugaz dos"></div>
+
+    <div class="constelacion">
+      <svg>
+        <line x1="18%" y1="32%" x2="32%" y2="20%" stroke="#ffafcc"/>
+        <line x1="32%" y1="20%" x2="48%" y2="35%" stroke="#cdb4db"/>
+        <line x1="48%" y1="35%" x2="63%" y2="23%" stroke="#bde0fe"/>
+        <line x1="63%" y1="23%" x2="80%" y2="38%" stroke="#ffc8dd"/>
+        <line x1="48%" y1="35%" x2="43%" y2="57%" stroke="#e0bbff"/>
+        <line x1="43%" y1="57%" x2="60%" y2="68%" stroke="#ffafcc"/>
+      </svg>
+
+      <div class="estrella" style="left:18%; top:32%; color:#ffafcc; background:#ffafcc;"></div>
+      <div class="estrella" style="left:32%; top:20%; color:#cdb4db; background:#cdb4db;"></div>
+      <div class="estrella" style="left:48%; top:35%; color:#bde0fe; background:#bde0fe;"></div>
+      <div class="estrella" style="left:63%; top:23%; color:#ffc8dd; background:#ffc8dd;"></div>
+      <div class="estrella" style="left:80%; top:38%; color:#e0bbff; background:#e0bbff;"></div>
+      <div class="estrella" style="left:43%; top:57%; color:#ffafcc; background:#ffafcc;"></div>
+      <div class="estrella" style="left:60%; top:68%; color:#cdb4db; background:#cdb4db;"></div>
+    </div>
+
+    <div class="contenido">
+      <div class="corazon">💗</div>
+      <h1 class="nombre">Lady</h1>
+      <h1 class="subtitulo">Mi lugar favorito eres tú</h1>
+      <p class="frase-corta">Entre tantos días, tantas vueltas y tantas estrellas, yo sigo sintiendo que lo más bonito que tengo es coincidir contigo.</p>
+
+      <button id="btnCarta" onclick="mostrarCarta()">Leer mi carta 💌</button>
+
+      <div class="carta" id="carta">
+        <p>
+          Lady, hoy cumplimos 2 años y 4 meses, y mientras pienso en todo este tiempo juntos, me doy cuenta de lo afortunado que soy por haberte encontrado. A veces me cuesta poner en palabras todo lo que siento por ti, porque hay cosas que simplemente se sienten más de lo que se pueden explicar.
+          <br><br>
+          Desde que llegaste a mi vida, muchas cosas cambiaron. No porque todo se volviera perfecto, sino porque ahora tengo a alguien con quien compartir mis alegrías, mis preocupaciones, mis metas y hasta mis días más simples. Eres esa persona en la que pienso cuando algo bueno me pasa y a la que quisiera abrazar cuando las cosas no salen como espero.
+          <br><br>
+          Tal vez no siempre podamos estar juntos físicamente, tal vez haya días difíciles, momentos de distancia o situaciones que nos pongan a prueba, pero hay algo que nunca cambia: el cariño tan grande que siento por ti. Porque incluso cuando no estamos hablando, cuando cada uno está ocupado en sus cosas, siempre encuentro una razón para recordarte.
+          <br><br>
+          Me gusta tu forma de ser, me gusta tu sonrisa, me gusta cómo me haces sentir cuando hablo contigo. Me gusta que, sin darte cuenta, logres sacar una sonrisa en días donde no tenía ganas de sonreír. Me gusta la tranquilidad que encuentro en ti y la confianza que has construido en mi corazón con el paso del tiempo.
+          <br><br>
+          Gracias por cada momento que hemos vivido juntos. Gracias por cada conversación, por cada consejo, por cada palabra de apoyo y por cada recuerdo que hemos creado. Gracias por quedarte incluso cuando las cosas no siempre fueron fáciles. Gracias por ser tú.
+          <br><br>
+          No sé qué nos tiene preparado el futuro, nadie puede saberlo. Pero sí sé que hoy, después de 2 años y 4 meses, sigo sintiendo la misma emoción cuando pienso en ti. Sigo sintiéndome feliz de tenerte en mi vida y sigo creyendo que eres una de las personas más importantes para mí.
+          <br><br>
+          Si algo he aprendido durante todo este tiempo, es que el amor no siempre está en los grandes regalos o en las palabras perfectas. A veces está en los pequeños detalles, en preocuparse por alguien, en escuchar, en acompañar, en permanecer. Y si hay algo que quiero que sepas, es que siempre intentaré estar para ti de la misma manera que tú has estado para mí.
+          <br><br>
+          Lady, gracias por estos 2 años y 4 meses. Gracias por cada recuerdo que llevo conmigo y por cada momento que aún nos falta vivir. De todas las casualidades que pudieron ocurrir en mi vida, conocerte fue la más bonita. ❤️
+          <br><br>
+          Te quiero muchísimo, hoy, mañana y todos los días que vengan. ✨🌙💖
+          <span class="firma">Con mucho cariño, para ti.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function mostrarUniverso() {
+      document.getElementById("inicio").style.display = "none";
+      document.getElementById("universo").style.display = "flex";
+    }
+
+    function mostrarCarta() {
+      const carta = document.getElementById("carta");
+      const boton = document.getElementById("btnCarta");
+      carta.classList.add("mostrar");
+      boton.classList.add("oculto");
+    }
+
+    const fondos = document.querySelectorAll(".fondo-estrellas");
+    fondos.forEach(fondo => {
+      for (let i = 0; i < 120; i++) {
+        const estrella = document.createElement("span");
+        const tam = Math.random() * 2.5 + 1;
+        estrella.style.width = tam + "px";
+        estrella.style.height = tam + "px";
+        estrella.style.left = Math.random() * 100 + "%";
+        estrella.style.top = Math.random() * 100 + "%";
+        estrella.style.animationDelay = Math.random() * 5 + "s";
+        estrella.style.animationDuration = 4 + Math.random() * 6 + "s";
+        fondo.appendChild(estrella);
+      }
+    });
+  </script>
+</body>
+</html>
